@@ -1,4 +1,4 @@
-package com.example.docvault.ui.theme
+package com.example.docvault.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

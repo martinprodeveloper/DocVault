@@ -1,4 +1,4 @@
-package com.example.docvault
+package com.example.docvault.presentation.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -11,8 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.docvault.ui.theme.DocVaultTheme
+import com.example.docvault.presentation.theme.DocVaultTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
