@@ -59,6 +59,21 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
+    // Hilt Navigation
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Images
+    implementation(libs.coil.compose)
+
+    // Security / Encryption
+    implementation(libs.androidx.security.crypto)
+
+    // Biometric
+    implementation(libs.androidx.biometric)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
