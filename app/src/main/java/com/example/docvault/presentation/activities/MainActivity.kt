@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
                     DocVaultNavHost(
                         navController = navController,
+                        context = this,
                         modifier = Modifier.padding(innerPadding)
                     )
 
