@@ -23,15 +23,14 @@ fun DocVaultNavHost(
     ) {
 
         composable(Routes.DOCUMENTS) {
-
             DocumentsScreen(
                 onDocumentClick = { documentId ->
-                    navController.navigate(
-                        Routes.documentDetail(documentId)
-                    )
+                    navController.navigate(Routes.documentDetail(documentId))
+                },
+                onAddDocument = {
+                    // TODO: Implement add document action
                 }
             )
-
         }
 
         composable(
