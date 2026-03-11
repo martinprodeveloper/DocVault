@@ -1,5 +1,6 @@
 package com.example.docvault.presentation.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -13,6 +14,7 @@ import com.example.docvault.presentation.screens.DocumentDetailScreen
 @Composable
 fun DocVaultNavHost(
     navController: NavHostController,
+    context: Context,
     modifier: Modifier = Modifier
 ) {
 
@@ -24,11 +26,9 @@ fun DocVaultNavHost(
 
         composable(Routes.DOCUMENTS) {
             DocumentsScreen(
+                context = context,
                 onDocumentClick = { documentId ->
                     navController.navigate(Routes.documentDetail(documentId))
-                },
-                onAddDocument = {
-                    // TODO: Implement add document action
                 }
             )
         }
