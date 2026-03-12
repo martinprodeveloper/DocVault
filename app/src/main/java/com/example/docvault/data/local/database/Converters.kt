@@ -1,8 +1,7 @@
 package com.example.docvault.data.local.database
 
 import androidx.room.TypeConverter
-import com.example.docvault.domain.model.DocumentType
-import com.example.docvault.domain.model.AccessAction
+import com.example.docvault.domain.model.*
 
 class Converters {
     @TypeConverter

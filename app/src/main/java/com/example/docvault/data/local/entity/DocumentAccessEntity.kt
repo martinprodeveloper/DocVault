@@ -9,5 +9,6 @@ data class DocumentAccessEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val documentId: Int,
     val timestamp: Long? = null,
-    val action: AccessAction? = null
+    val action: AccessAction? = null,
+    val locationAddress: String? = null
 )
