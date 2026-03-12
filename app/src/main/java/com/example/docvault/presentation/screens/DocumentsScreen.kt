@@ -30,8 +30,8 @@ fun DocumentsScreen(
     onDocumentClick: (String) -> Unit,
     viewModel: DocumentsViewModel = hiltViewModel()
 ) {
-    val state = viewModel.uiState.value
-    val selectedFilter = viewModel.selectedFilter.value
+    val state by viewModel.uiState.collectAsState()
+    val selectedFilter by viewModel.selectedFilter.collectAsState()
     val scope = rememberCoroutineScope()
     var showPickerMenu by remember { mutableStateOf(false) }
 
@@ -127,15 +127,16 @@ fun DocumentsScreen(
                 when (state) {
                     is DocumentsUiState.Loading -> CircularProgressIndicator()
                     is DocumentsUiState.Empty -> Text("NO DOCUMENTS")
-                    is DocumentsUiState.Error -> Text("ERROR: ${state.message}")
+                    is DocumentsUiState.Error -> Text("ERROR: ${(state as DocumentsUiState.Error).message}")
                     is DocumentsUiState.Success -> {
+                        val docs = (state as DocumentsUiState.Success).documents
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(state.documents) { document ->
+                            items(docs) { document ->
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
