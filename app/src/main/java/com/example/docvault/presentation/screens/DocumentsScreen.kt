@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.docvault.domain.model.DocumentType
 import com.example.docvault.presentation.screens.components.DocumentFilter
 import com.example.docvault.presentation.states.DocumentsUiState
+import com.example.docvault.presentation.utils.AppUtils
 import com.example.docvault.presentation.viewmodels.DocumentsViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -140,7 +141,13 @@ fun DocumentsScreen(
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable { document.id?.let { onDocumentClick(it) } },
+                                        .clickable {
+                                            if (document.type == DocumentType.PDF && document.path != null) {
+                                                AppUtils.openPdf(context, File(document.path))
+                                            } else {
+                                                document.id?.let { onDocumentClick(it) }
+                                            }
+                                        },
                                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                                 ) {
                                     Column(

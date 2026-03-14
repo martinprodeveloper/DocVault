@@ -7,6 +7,7 @@ import com.example.docvault.domain.model.AccessAction
 import com.example.docvault.domain.usecase.DocumentUseCase
 import com.example.docvault.presentation.states.DocumentDetailUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,22 +24,25 @@ class DocumentDetailViewModel @Inject constructor(
 
     fun loadDocument(id: String) {
         _uiState.value = DocumentDetailUiState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val document = documentUseCase.getDocumentById(id)
-                _uiState.value = if (document == null) {
-                    DocumentDetailUiState.Error("Document not found")
-                } else {
-                    DocumentDetailUiState.RequireBiometric
-                }
+                _uiState.value =
+                    if (document == null) {
+                        DocumentDetailUiState.Error("Document not found")
+                    } else {
+                        DocumentDetailUiState.RequireBiometric
+                    }
             } catch (e: Exception) {
-                _uiState.value = DocumentDetailUiState.Error(e.message)
+                _uiState.value = DocumentDetailUiState.Error(
+                    e.message ?: "Unexpected error"
+                )
             }
         }
     }
 
     fun onBiometricSuccess(documentId: String, locationAddress: String? = null) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val document = documentUseCase.getDocumentById(documentId)
             document?.let {
                 documentUseCase.updateLastAccess(documentId)
@@ -52,16 +56,17 @@ class DocumentDetailViewModel @Inject constructor(
                 documentUseCase.insertAccessLog(access)
 
                 val accessLogs = documentUseCase.getAccessLogs(documentId)
-                _uiState.value = DocumentDetailUiState.Success(
-                    document = it,
-                    accessLogs = accessLogs
-                )
+                _uiState.value =
+                    DocumentDetailUiState.Success(
+                        document = it,
+                        accessLogs = accessLogs
+                    )
             }
         }
     }
 
     fun deleteDocument(documentId: String, locationAddress: String? = null) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             documentUseCase.deleteDocument(documentId)
 
             val access = DocumentAccess(
