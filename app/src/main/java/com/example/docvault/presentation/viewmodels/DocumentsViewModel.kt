@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.CipherOutputStream
 import javax.crypto.spec.IvParameterSpec
@@ -34,16 +35,20 @@ class DocumentsViewModel @Inject constructor(
 
     private var allDocuments: List<Document> = emptyList()
 
-    init { loadDocuments() }
+    init {
+        loadDocuments()
+    }
 
     fun loadDocuments() {
         _uiState.value = DocumentsUiState.Loading
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 allDocuments = documentUseCase.getAllDocuments()
                 updateUiState()
             } catch (e: Exception) {
-                _uiState.value = DocumentsUiState.Error(e.message)
+                _uiState.value = DocumentsUiState.Error(
+                    e.message ?: "Unexpected error"
+                )
             }
         }
     }
@@ -54,8 +59,8 @@ class DocumentsViewModel @Inject constructor(
     }
 
     private fun updateUiState() {
-        val filtered = _selectedFilter.value?.let { t ->
-            allDocuments.filter { it.type == t }
+        val filtered = _selectedFilter.value?.let { type ->
+            allDocuments.filter { it.type == type }
         } ?: allDocuments
 
         _uiState.value = when {
@@ -83,7 +88,9 @@ class DocumentsViewModel @Inject constructor(
                 allDocuments = allDocuments + document
                 updateUiState()
             } catch (e: Exception) {
-                _uiState.value = DocumentsUiState.Error(e.message)
+                _uiState.value = DocumentsUiState.Error(
+                    e.message ?: "Unexpected error"
+                )
             }
         }
     }
@@ -92,6 +99,7 @@ class DocumentsViewModel @Inject constructor(
         val keyBytes = ByteArray(32)
         val keySpec = SecretKeySpec(keyBytes, "AES")
         val iv = ByteArray(16)
+        SecureRandom().nextBytes(iv)
         val ivSpec = IvParameterSpec(iv)
 
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")

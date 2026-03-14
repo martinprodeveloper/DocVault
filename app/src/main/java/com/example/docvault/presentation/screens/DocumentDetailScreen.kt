@@ -53,7 +53,9 @@ fun DocumentDetailScreen(
         }
     }
 
-    LaunchedEffect(documentId) { viewModel.loadDocument(documentId) }
+    LaunchedEffect(documentId) {
+        viewModel.loadDocument(documentId)
+    }
 
     val state by viewModel.uiState.collectAsState()
     var scale by remember { mutableFloatStateOf(1f) }
@@ -103,12 +105,20 @@ fun DocumentDetailScreen(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") }
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+            }
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "DOCUMENT DETAIL", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "DOCUMENT DETAIL",
+                style = MaterialTheme.typography.titleLarge
+            )
         }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
             when (val currentState = state) {
                 is DocumentDetailUiState.Loading -> CircularProgressIndicator()
 
@@ -132,14 +142,18 @@ fun DocumentDetailScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(16.dp)
                     ) {
-                        Text(text = document.name ?: "DOCUMENT", style = MaterialTheme.typography.titleLarge)
+                        Text(
+                            text = document.name ?: "DOCUMENT",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+
                         Spacer(modifier = Modifier.height(16.dp))
 
                         if (document.type == DocumentType.IMAGE && document.path != null) {
                             val bitmap = BitmapFactory.decodeFile(File(document.path).absolutePath)
                             bitmap?.let { originalBitmap ->
-                                val watermarkedBitmap =
-                                    AppUtils.addWatermark(originalBitmap, locationAddress)
+                                val scaledBitmap = AppUtils.scaleBitmap(originalBitmap, 1200, 1200)
+                                val watermarkedBitmap = AppUtils.addWatermark(scaledBitmap, locationAddress)
                                 Image(
                                     bitmap = watermarkedBitmap.asImageBitmap(),
                                     contentDescription = document.name,
@@ -166,11 +180,16 @@ fun DocumentDetailScreen(
 
                         if (currentState.accessLogs.isNotEmpty()) {
                             Column {
-                                Text("Last Accesses:", style = MaterialTheme.typography.titleMedium)
+                                Text(
+                                    "Last Accesses:",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
                                 currentState.accessLogs.forEach { log ->
                                     val date = log.timestamp?.let {
-                                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                            .format(Date(it))
+                                        SimpleDateFormat(
+                                            "yyyy-MM-dd HH:mm:ss",
+                                            Locale.getDefault()
+                                        ).format(Date(it))
                                     } ?: "-"
                                     val location = log.locationAddress ?: "-"
                                     Text("$date - ${log.action ?: "-"} - $location")
@@ -182,9 +201,14 @@ fun DocumentDetailScreen(
 
                         Button(
                             onClick = { viewModel.deleteDocument(documentId, locationAddress) },
-                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            )
                         ) {
-                            Text("Delete Document", color = MaterialTheme.colorScheme.onError)
+                            Text(
+                                "Delete Document",
+                                color = MaterialTheme.colorScheme.onError
+                            )
                         }
                     }
                 }
